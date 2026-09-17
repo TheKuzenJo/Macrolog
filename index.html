@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d10">
+<title>MacroLog</title>
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MacroLog">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{color-scheme:dark;--bg:#090b0e;--card:#12161b;--card2:#171c22;--line:#252c34;--text:#f4f6f8;--muted:#8f9aa7;--accent:#7dd3fc;--green:#86efac;--orange:#fdba74;--pink:#f9a8d4}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#090b0e 0%,#0d1116 100%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}button{border:0;color:inherit}.app{max-width:760px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(90px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{font-size:25px;font-weight:800;letter-spacing:-.7px}.brand span{color:var(--accent)}.date{color:var(--muted);font-size:13px;margin-top:3px}
+.iconbtn,.btn{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 13px;cursor:pointer}.iconbtn{font-size:17px}
+.hero{background:linear-gradient(145deg,#151a21,#101419);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:12px;box-shadow:0 12px 35px #0004}
+.cal{font-size:42px;font-weight:800;letter-spacing:-1.5px}.cal small{font-size:15px;color:var(--muted);font-weight:500}.bar{height:7px;background:#242a31;border-radius:10px;margin:13px 0 18px;overflow:hidden}.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:10px;transition:.25s}
+.macrogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.macro{background:#0d1115;border:1px solid #20262d;border-radius:14px;padding:11px}.macro b{display:block;font-size:18px}.macro small{color:var(--muted);font-size:12px}.p b{color:var(--green)}.c b{color:var(--orange)}.f b{color:var(--pink)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:20px 2px 9px}.section h2{font-size:17px;margin:0}.section button{background:none;color:var(--accent);padding:5px;cursor:pointer}
+.meal{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:9px;overflow:hidden}.mealhead{padding:13px 14px;display:flex;justify-content:space-between;align-items:center}.mealname{font-weight:700}.mealcal{color:var(--muted);font-size:13px}.food{display:flex;justify-content:space-between;padding:11px 14px;border-top:1px solid #20262d;gap:10px}.foodname{font-size:14px}.foodmeta{color:var(--muted);font-size:12px;margin-top:3px}.foodright{text-align:right;white-space:nowrap}.foodright b{font-size:14px}.foodright small{display:block;color:var(--muted);font-size:11px}
+.empty{color:var(--muted);text-align:center;padding:25px 10px;background:var(--card);border:1px dashed var(--line);border-radius:16px}
+.fab{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--accent);color:#061017;font-weight:800;border-radius:18px;padding:14px 22px;box-shadow:0 10px 30px #0008;z-index:5}
+.overlay{position:fixed;inset:0;background:#0009;display:none;align-items:flex-end;z-index:10}.overlay.show{display:flex}.sheet{width:100%;max-width:760px;margin:auto;background:#101419;border:1px solid var(--line);border-radius:22px 22px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}.sheet h3{margin:0 0 15px;font-size:20px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.field{margin-bottom:10px}.field label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}.field input,.field select{width:100%;background:#0b0f13;color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px;outline:none}.field input:focus{border-color:var(--accent)}.actions{display:flex;gap:8px;margin-top:8px}.actions .primary{flex:1;background:var(--accent);color:#061017;font-weight:800}.danger{color:#fca5a5!important}
+.search{margin-bottom:10px}.listitem{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:7px}.listitem small{display:block;color:var(--muted);margin-top:3px}.listitem button{background:#202832;border-radius:10px;padding:8px 11px}
+.tabs{display:flex;background:#0b0f13;border:1px solid var(--line);padding:4px;border-radius:13px;margin-bottom:13px}.tabs button{flex:1;background:none;padding:9px;border-radius:9px;color:var(--muted)}.tabs .active{background:var(--card2);color:var(--text)}
+.notice{font-size:12px;color:var(--muted);line-height:1.45;background:#0c1014;border-radius:11px;padding:10px;margin-top:10px}
+.historyday{padding:13px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.historyday b{font-size:14px}.historyday span{color:var(--muted);font-size:12px}
+@media(min-width:600px){.overlay{align-items:center}.sheet{border-radius:22px;max-width:560px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="brand">Macro<span>Log</span></div><div class="date" id="today"></div></div><button class="iconbtn" id="settings">⚙︎</button></header>
+<section class="hero">
+  <div class="cal" id="totalCal">0 <small>kcal</small></div>
+  <div class="bar"><i id="calbar"></i></div>
+  <div class="macrogrid">
+    <div class="macro p"><b id="p">0 g</b><small>Protein</small></div>
+    <div class="macro c"><b id="c">0 g</b><small>Carbs</small></div>
+    <div class="macro f"><b id="f">0 g</b><small>Fat</small></div>
+  </div>
+</section>
+<div class="section"><h2>Bugün</h2><button id="clearDay">Günü temizle</button></div>
+<div id="meals"></div>
+<div class="section"><h2>Kayıtlı besinler</h2><button id="manage">Yönet</button></div>
+<div id="quickFoods"></div>
+</div>
+<button class="fab" id="add">＋ Besin ekle</button>
+
+<div class="overlay" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+'use strict';
+const KEY='macrolog_v1';
+const defaultState={settings:{calorieGoal:2500},foods:[],meals:[],days:{}};
+let state=load(), todayKey=key(new Date());
+
+function load(){try{return {...defaultState,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(e){return structuredClone(defaultState)}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function key(d){return d.toISOString().slice(0,10)}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function num(v){return Math.round((Number(v)||0)*100)/100}
+function fmt(v){return Number(v).toLocaleString('tr-TR',{maximumFractionDigits:1})}
+function day(){return state.days[todayKey] ||= []}
+function totals(items=day()){return items.reduce((a,x)=>{a.cal+=x.cal;a.p+=x.p;a.c+=x.c;a.f+=x.f;return a},{cal:0,p:0,c:0,f:0})}
+function render(){
+ document.getElementById('today').textContent=new Date().toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long'});
+ const t=totals(); document.getElementById('totalCal').innerHTML=`${fmt(t.cal)} <small>kcal</small>`;
+ document.getElementById('p').textContent=`${fmt(t.p)} g`;document.getElementById('c').textContent=`${fmt(t.c)} g`;document.getElementById('f').textContent=`${fmt(t.f)} g`;
+ document.getElementById('calbar').style.width=Math.min(100,t.cal/(state.settings.calorieGoal||2500)*100)+'%';
+ const groups={Breakfast:'Kahvaltı',Lunch:'Öğle',Dinner:'Akşam',Snack:'Atıştırmalık'};
+ document.getElementById('meals').innerHTML=Object.entries(groups).map(([k,n])=>{
+   const xs=day().filter(x=>x.meal===k), mt=totals(xs); if(!xs.length)return '';
+   return `<div class="meal"><div class="mealhead"><span class="mealname">${n}</span><span class="mealcal">${fmt(mt.cal)} kcal</span></div>${xs.map((x,i)=>`<div class="food"><div><div class="foodname">${esc(x.name)}</div><div class="foodmeta">${fmt(x.grams)} g</div></div><div class="foodright"><b>${fmt(x.cal)} kcal</b><small>P ${fmt(x.p)} · C ${fmt(x.c)} · F ${fmt(x.f)}</small></div></div>`).join('')}</div>`;
+ }).join('') || '<div class="empty">Bugün henüz bir şey eklenmedi.</div>';
+ const recent=state.foods.slice(-5).reverse();
+ document.getElementById('quickFoods').innerHTML=recent.length?recent.map(f=>`<div class="listitem"><div><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g · P ${fmt(f.p)} · C ${fmt(f.c)} · F ${fmt(f.f)}</small></div><button onclick="quick('${f.id}')">Ekle</button></div>`).join(''):'<div class="empty">Kendi besinlerini kaydettiğinde burada hızlı ekleyebilirsin.</div>';
+}
+function openSheet(html){document.getElementById('sheet').innerHTML=html;document.getElementById('modal').classList.add('show')}
+function closeSheet(){document.getElementById('modal').classList.remove('show')}
+document.getElementById('modal').onclick=e=>{if(e.target.id==='modal')closeSheet()};
+
+document.getElementById('add').onclick=()=>openAdd();
+function openAdd(){
+ openSheet(`<h3>Besin ekle</h3><div class="field"><label>Besin ara / seç</label><input id="findFood" class="search" placeholder="Örn. tavuk, yoğurt..." autocomplete="off"></div><div id="foodResults"></div>
+ <div class="notice">Kayıtlı bir besini seçersen gramını girerek değerleri otomatik hesaplanır. Yeni besin için aşağıdan oluşturabilirsin.</div><div class="actions"><button class="btn" onclick="newFood()">＋ Yeni besin oluştur</button></div>`);
+ renderFoodResults();document.getElementById('findFood').oninput=renderFoodResults;
+}
+function renderFoodResults(){
+ const q=(document.getElementById('findFood')?.value||'').toLowerCase();
+ const fs=state.foods.filter(f=>f.name.toLowerCase().includes(q)).slice().reverse();
+ document.getElementById('foodResults').innerHTML=fs.map(f=>`<div class="listitem"><div><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g</small></div><button onclick="portion('${f.id}')">Ekle</button></div>`).join('')||'<div class="empty">Besin bulunamadı.</div>';
+}
+function newFood(editId=null){
+ const f=editId?state.foods.find(x=>x.id===editId):null;
+ openSheet(`<h3>${f?'Besini düzenle':'Yeni besin'}</h3>
+ <div class="field"><label>İsim</label><input id="fn" value="${esc(f?.name||'')}"></div>
+ <div class="notice">Değerleri <b>100 gram</b> üzerinden gir. Gramaj girince günlük hesaba otomatik çevrilir.</div>
+ <div class="row">${[['fk','Kalori (kcal)','kcal'],['fp','Protein (g)','p'],['fc','Karbonhidrat (g)','c'],['ff','Yağ (g)','f']].map(([id,l,k])=>`<div class="field"><label>${l}</label><input id="${id}" type="number" min="0" step="0.1" value="${f?.[k]??''}"></div>`).join('')}</div>
+ <div class="actions"><button class="btn" onclick="closeSheet()">İptal</button><button class="btn primary" onclick="saveFood('${editId||''}')">Kaydet</button></div>`);
+}
+function saveFood(id){
+ const name=document.getElementById('fn').value.trim();if(!name)return alert('Bir isim gir.');
+ const obj={id:id||crypto.randomUUID(),name,kcal:num(document.getElementById('fk').value),p:num(document.getElementById('fp').value),c:num(document.getElementById('fc').value),f:num(document.getElementById('ff').value)};
+ if(id)state.foods=state.foods.map(x=>x.id===id?obj:x);else state.foods.push(obj);save();closeSheet();render();
+}
+function portion(id){
+ const f=state.foods.find(x=>x.id===id);if(!f)return;
+ openSheet(`<h3>${esc(f.name)}</h3><div class="field"><label>Gramaj</label><input id="grams" type="number" min="0" step="1" value="100" autofocus></div><div class="tabs">${['Breakfast','Lunch','Dinner','Snack'].map((x,i)=>`<button class="${i===0?'active':''}" data-meal="${x}" onclick="chooseMeal(this)">${['Kahvaltı','Öğle','Akşam','Atıştırmalık'][i]}</button>`).join('')}</div><div class="notice" id="preview"></div><div class="actions"><button class="btn" onclick="closeSheet()">İptal</button><button class="btn primary" onclick="addPortion('${f.id}')">Bugüne ekle</button></div>`);
+ document.getElementById('grams').oninput=()=>preview(f);preview(f);
+}
+function chooseMeal(el){document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));el.classList.add('active')}
+function selectedMeal(){return document.querySelector('.tabs .active')?.dataset.meal||'Breakfast'}
+function preview(f){const g=Number(document.getElementById('grams').value)||0;document.getElementById('preview').innerHTML=`<b>${fmt(f.kcal*g/100)} kcal</b> · P ${fmt(f.p*g/100)} g · C ${fmt(f.c*g/100)} g · F ${fmt(f.f*g/100)} g`}
+function addPortion(id){const f=state.foods.find(x=>x.id===id),g=Number(document.getElementById('grams').value)||0;if(!g)return;
+ const r=g/100;day().push({id:crypto.randomUUID(),foodId:id,name:f.name,grams:g,cal:num(f.kcal*r),p:num(f.p*r),c:num(f.c*r),f:num(f.f*r),meal:selectedMeal()});save();closeSheet();render()}
+function quick(id){portion(id)}
+document.getElementById('manage').onclick=manage;
+function manage(){
+ openSheet(`<h3>Kayıtlı besinler</h3><div class="actions"><button class="btn primary" onclick="newFood()">＋ Yeni besin</button></div><div id="manageList" style="margin-top:12px"></div>`);
+ document.getElementById('manageList').innerHTML=state.foods.slice().reverse().map(f=>`<div class="listitem"><div><b>${esc(f.name)}</b><small>${fmt(f.kcal)} kcal / 100 g · P ${fmt(f.p)} · C ${fmt(f.c)} · F ${fmt(f.f)}</small></div><div style="display:flex;gap:5px"><button onclick="newFood('${f.id}')">✎</button><button class="danger" onclick="deleteFood('${f.id}')">×</button></div></div>`).join('')||'<div class="empty">Henüz kayıtlı besin yok.</div>';
+}
+function deleteFood(id){if(confirm('Bu besini silmek istediğine emin misin? Geçmişteki kayıtlar korunur.')){state.foods=state.foods.filter(x=>x.id!==id);save();manage();render()}}
+document.getElementById('clearDay').onclick=()=>{if(day().length&&confirm('Bugünün kayıtları silinsin mi?')){delete state.days[todayKey];save();render()}};
+document.getElementById('settings').onclick=()=>openSheet(`<h3>Ayarlar</h3><div class="field"><label>Günlük kalori hedefi (sadece gösterim için)</label><input id="goal" type="number" min="0" value="${state.settings.calorieGoal}"></div><div class="actions"><button class="btn" onclick="closeSheet()">İptal</button><button class="btn primary" onclick="saveSettings()">Kaydet</button></div><div class="notice">Bu uygulama sana diyet veya hedef önermez. Hedef sadece üstteki ilerleme çubuğunu hesaplamak için kullanılır.</div>`);
+function saveSettings(){state.settings.calorieGoal=num(document.getElementById('goal').value)||2500;save();closeSheet();render()}
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
