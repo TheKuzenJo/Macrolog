@@ -1,7 +1,7 @@
 {
   "name": "MacroLog",
   "short_name": "MacroLog",
-  "description": "Basit günlük kalori ve makro takip uygulaması.",
+  "description": "Kalori, makro, su, lif, öğün ve geçmiş takip uygulaması.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#090b0e",
